@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+// Module dependencies
+
+var program = require('commander')
+    , pkg = require('../package.json')
+    , os = require('os')
+    , fs = require('fs')
+    ,	mudjs = require('../')
+    ;
+
+// CLI
+
+program.version(pkg.version)
+    .usage('[host] [port]')
+    .option('-h, --host', 'Telnet server hostname')
+    .option('-p, --port', 'Port of telnet server')
+    .parse(process.argv)
+
+
+if (program.host || program.args[0]) {
+    var host = program.args[0] ? program.args[0] : program.host;
+    var port = program.args[1] ? program.args[1] : program.port ? program.port : 23;
+    mudjs.connect(host, port)
+}
+
+if (!program.host && !program.args[0]) {
+    console.error('Usage: mudjs [host] [port]');
+    process.exit(0);
+}
+
+
+function abort(str) {
+    console.error(str);
+    process.exit(1);
+}
+
+
