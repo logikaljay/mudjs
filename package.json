@@ -1,10 +1,17 @@
 {
     "name": "mudjs",
     "description": "A node telnet / MUD client",
-    "version": "0.0.8",
-    "author": "Andy Baird <andybaird@gmail.com>",
+    "version": "0.0.9",
+    "author": {
+        "name": "Andy Baird",
+        "email": "andybaird@gmail.com"
+    },
     "bin": {
         "mudjs": "./bin/mudjs"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ajbdev/mudjs.git"
     },
     "engines": {
         "node":	">= 0.8.0"
@@ -12,5 +19,10 @@
     "dependencies": {
         "commander": "1.3.2",
         "colors": "0.6.2"
-    }
+    },
+    "keywords": [
+        "stdin",
+        "telnet",
+        "mud"
+    ]
 }
