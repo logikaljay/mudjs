@@ -17,18 +17,13 @@ program.version(pkg.version)
     .option('-p, --port', 'Port of telnet server')
     .parse(process.argv)
 
-
 if (program.host || program.args[0]) {
     var host = program.args[0] ? program.args[0] : program.host;
     var port = program.args[1] ? program.args[1] : program.port ? program.port : 23;
-    mudjs.connect(host, port)
+    mudjs.startAndConnect(host, port)
+} else {
+    mudjs.start();
 }
-
-if (!program.host && !program.args[0]) {
-    console.error('Usage: mudjs [host] [port]');
-    process.exit(0);
-}
-
 
 function abort(str) {
     console.error(str);
