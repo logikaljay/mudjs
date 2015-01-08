@@ -10,40 +10,73 @@ chat.prefix = "<CHAT>";
 chat.connections = [];
 chat.msg = {
         _private: { 
-		send: "%s chats to you, '%s'.", 
-		show: "You chat to %s, '%s'." 
-	},
-	_public: { 
-		send: "%s chats to everyone, '%s'.", 
-		show: "You chat to everyone, '%s'." 
-	}
+        send: "%s chats to you, '%s'.", 
+        show: "You chat to %s, '%s'." 
+    },
+    _public: { 
+        send: "%s chats to everyone, '%s'.", 
+        show: "You chat to everyone, '%s'." 
+    }
 };
 
 chat.cmd = {
         _namechange: "01",
-	_public: "04",
-	_private: "05",
+    _public: "04",
+    _private: "05",
         _version: "13",
         _pingrequest: "1A",
         _pingresponse: "1B",
         _peek: "1C",
         _snoop: "1E",
-	_end: "FF"
+    _end: "FF"
 }
 
 chat.load = function(mudjs) {
     console.log("%s Plugin loaded", chat.prefix);
 
     this.connect('localhost', '4050');
-	
-	mudjs._commands.chatall = function(mudjs, args) {
+    
+    mudjs._commands.add(
+        'chatall', 
+        'Send a public chat message', 
+        [{
+            name: 'message',
+            description: 'Message to send to all chat connections',
+            optional: false
+        }],
+        function(mudjs, args) {
             chat._sendPublic(args.join(" "));
-	};
-	
-	mudjs._commands.chat = function(mudjs, args) {
-	    chat._sendPrivate(args.shift(), args.join(" "));
-	};
+        });
+
+    mudjs._commands.add(
+        'chat',
+        'Send a private chat message',
+        [{
+            name: 'name',
+            description: 'Chat name to private message',
+            optional: false
+        },{
+            name: 'message',
+            description: 'Message to send privately',
+            optional: false
+        }],
+        function(mudjs, args) {
+           chat._sendPrivate(args.shift(), args.join(" "));
+        });
+
+    mudjs._commands.add(
+        'chatname',
+        'Change your chat name',
+        [{
+            name: 'name',
+            description: 'Your new chat name',
+            optional: false
+        }],
+        function(mudjs, args) {
+            chat._sendNameChange(args[0]);
+        });
 }
+
 chat.unload = function() {
     console.log("%s Plugin unloaded", chat.prefix);
 }
@@ -66,14 +99,14 @@ chat.connect = function(host, port) {
             // to complete the handshake, send our version
             var data = convertToHex("mudjs v0.1");
             var buf = new Buffer('13' + data + 'FF', 'hex');
-			
+            
             connection.fd.write(buf, 'hex');
-						
+
             connection.fd.on('error', function(err) {
                 console.log(err);
             });
 
-	    connection.name = chatName.trim();
+            connection.name = chatName.trim();
 
             chat.connections.push(connection);
         } else {
@@ -84,7 +117,7 @@ chat.connect = function(host, port) {
             cmd = ("0" + data[0].toString(16)).substr(-2);
             chat._recvCommand(connection, cmd, data.toString().substring(1, data.length - 1));
         }
-    });	
+    });    
 }
 
 chat._recvCommand = function(conn, cmd, str) {
@@ -100,6 +133,22 @@ chat._recvCommand = function(conn, cmd, str) {
             this._showNameChange(conn, str);
             break;
     }
+}
+
+chat._sendNameChange = function(str) {
+    var newName = str.trim();
+
+    this.name = newName;
+    var data = convertToHex(newName);
+    var buf = new Buffer(this.cmd._namechange + data + this.cmd._end, 'hex');
+
+    // send name change to all connections
+    this.connections.forEach(function(connection) {
+        connection.fd.write(buf, 'hex');
+    });
+
+    // show name change
+    this._show(util.format('You have changed your name to %s.', newName));
 }
 
 chat._showNameChange = function(conn, str) {
@@ -129,14 +178,14 @@ chat._sendPublic = function(str) {
         var text = util.format(this.msg._public.send, this.name, str);
         var show = util.format(this.msg._public.show, str);
         var data = convertToHex(text);
-	var buf = new Buffer(this.cmd._public + data + this.cmd._end, 'hex');
-		
+        var buf = new Buffer(this.cmd._public + data + this.cmd._end, 'hex');
+
         // send str to all connections
         this.connections.forEach(function(connection) {
             connection.fd.write(buf, 'hex');
-	});
-		
-	this._show(show);
+        });
+        
+        this._show(show);
     } else {
         this._show('you are not connected to anyone');
     }
@@ -144,14 +193,14 @@ chat._sendPublic = function(str) {
 
 chat._sendPrivate = function(name, str) {
     var connection = this._getConnectionByName(name);
-	
+    
     if (connection !== undefined) {
         var text = util.format(this.msg._private.send, this.name, str);
         var show = util.format(this.msg._private.show, name, str);
-		
+        
         var data = convertToHex(text);
         var buf = new Buffer(this.cmd._private + data + this.cmd._end, 'hex');
-		
+
         connection.fd.write(buf, 'hex');
         this._show(show);
     } else {
@@ -165,7 +214,7 @@ chat._getConnectionByName = function(name) {
             return connection;
         }
     });
-	
+
     return conn[0];
 }
 
