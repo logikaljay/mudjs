@@ -18,8 +18,7 @@
     },
     "dependencies": {
         "commander": "1.3.2",
-        "colors": "0.6.2",
-        "mongoose": "3.8.0"
+        "colors": "0.6.2"
     },
     "keywords": [
         "stdin",
