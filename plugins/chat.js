@@ -2,39 +2,39 @@ var telnet = require('../lib/telnet');
 var chat = exports = module.exports = {};
 var util = require('util');
 var net = require('net');
+var colors = require('colors');
 
 chat.initialized = false;
 
 chat.name = "kanato";
 chat.prefix = "<CHAT>";
+chat.numConnections = 0;
 chat.connections = [];
 chat.msg = {
         _private: { 
         send: "%s chats to you, '%s'.", 
         show: "You chat to %s, '%s'." 
     },
-    _public: { 
+        _public: { 
         send: "%s chats to everyone, '%s'.", 
         show: "You chat to everyone, '%s'." 
     }
 };
 
 chat.cmd = {
-        _namechange: "01",
+    _namechange: "01",
     _public: "04",
     _private: "05",
-        _version: "13",
-        _pingrequest: "1A",
-        _pingresponse: "1B",
-        _peek: "1C",
-        _snoop: "1E",
+    _version: "13",
+    _pingrequest: "1A",
+    _pingresponse: "1B",
+    _peek: "1C",
+    _snoop: "1E",
     _end: "FF"
 }
 
 chat.load = function(mudjs) {
-    console.log("%s Plugin loaded", chat.prefix);
-
-    this.connect('localhost', '4050');
+    this._show("Plugin loaded");
     
     mudjs._commands.add(
         'chatall', 
@@ -75,18 +75,54 @@ chat.load = function(mudjs) {
         function(mudjs, args) {
             chat._sendNameChange(args[0]);
         });
+
+    mudjs._commands.add(
+        'chatwho',
+        'List all chat connections',
+        [],
+        function(mudjs, args) {
+            chat._showChatConnections();
+        });
+
+    mudjs._commands.add(
+        'unchat',
+        'Disconnect from a chat',
+        [{
+            name: 'Connection',
+            description: 'Name or number of connection to disconnect',
+            optional: false
+        }],
+        function(mudjs, args) {
+            chat._disconnect(args[0]);
+        });
+
+    mudjs._commands.add(
+        'call',
+        'Call a chat server',
+        [{
+            name: 'host',
+            description: 'the hostname or IP of the chat server',
+            optional: false
+        },{
+            name: 'port',
+            description: 'the port of the chat server',
+            optional: false
+        }],
+        function(mudjs, args) {
+            chat._connect(args[0], args[1]);
+        });
 }
 
 chat.unload = function() {
-    console.log("%s Plugin unloaded", chat.prefix);
+    console.log("Plugin unloaded");
 }
 
-chat.connect = function(host, port) {
+chat._connect = function(host, port) {
     var connection = {};
     connection.fd = net.Socket();
 
     connection.fd.connect(port, host, function() {
-        console.log("%s Connected - Waiting for response", chat.prefix);
+        chat._show("Connected - Waiting for response", chat.prefix);
         var handshake = util.format('CHAT:%s\n%s%s', chat.name, '10.1.1.1', '4050 ');
         connection.fd.write(handshake);
     });
@@ -95,29 +131,61 @@ chat.connect = function(host, port) {
         var str = data.toString();
         if (str.indexOf('YES:') > -1) {
             var chatName = str.replace('YES:', '');
-            
+            connection.name = chatName.trim();
+
             // to complete the handshake, send our version
             var data = convertToHex("mudjs v0.1");
-            var buf = new Buffer('13' + data + 'FF', 'hex');
+            var buf = new Buffer(chat.cmd._version + data + chat.cmd._end, 'hex');
             
+            // write the handshake to the socket
             connection.fd.write(buf, 'hex');
-
             connection.fd.on('error', function(err) {
                 console.log(err);
             });
 
-            connection.name = chatName.trim();
+            // increment and add connection to the pool
+            chat.connections[chat.numConnections] = connection;
+            chat.numConnections++;
 
-            chat.connections.push(connection);
+            chat._show(util.format("Received response, connection to %s established.", connection.name));
         } else {
             // process the incoming data by getting the first byte
-            var cmd = data[0].toString(16);
+            var cmd = ("0" + data[0].toString(16)).substr(-2);
 
-            // format our command for two digit hex with leading 0's
-            cmd = ("0" + data[0].toString(16)).substr(-2);
+            // handle the command
             chat._recvCommand(connection, cmd, data.toString().substring(1, data.length - 1));
         }
-    });    
+    });
+
+    connection.fd.on('close', function(err) {
+        chat.connections = chat.connections.filter(function(con) {
+            return con !== connection;
+        });
+        chat.numConnections = chat.connections.length;
+
+        chat._show(util.format("%s has been disconnected.", connection.name));
+    });
+}
+
+chat._disconnect = function(str) {
+    var connection;
+    if (!isNaN(str)) {
+        // we are dealing with a 0-index
+        var num = Number(str);
+        if (num !== 0) {
+            num--;
+        }
+
+        connection = this._getConnectionByNumber(num);
+    } else {
+        connection = this._getConnectionByName(str);
+    }
+
+    if (connection !== undefined) {
+        connection.fd.end();
+    } else {
+        this._show(util.format("You are not connected to %s.", str))
+    }
 }
 
 chat._recvCommand = function(conn, cmd, str) {
@@ -133,6 +201,23 @@ chat._recvCommand = function(conn, cmd, str) {
             this._showNameChange(conn, str);
             break;
     }
+}
+
+chat._showChatConnections = function() {
+    var chatConnections = [];
+    var i = 1;
+    chat.connections.forEach(function(connection) {
+        chatConnections.push({
+            id: i,
+            name: connection.name,
+            ip: connection.fd.remoteAddress,
+            port: connection.fd.remotePort
+        });
+
+        i++;
+    });
+
+    console.log(chatConnections);
 }
 
 chat._sendNameChange = function(str) {
@@ -204,8 +289,12 @@ chat._sendPrivate = function(name, str) {
         connection.fd.write(buf, 'hex');
         this._show(show);
     } else {
-        this._show(util.format('you are not connected to %s', name));
+        this._show(util.format('you are not connected to %s.', name));
     }
+}
+
+chat._show = function(str) {
+    process.stdout.write(util.format("%s %s", this.prefix, str).red + os.EOL);
 }
 
 chat._getConnectionByName = function(name) {
@@ -218,10 +307,17 @@ chat._getConnectionByName = function(name) {
     return conn[0];
 }
 
-chat._show = function(str) {
-    process.stdout.write(util.format("%s %s", this.prefix, str) + os.EOL);
+chat._getConnectionByNumber = function(number) {
+    if (!isNaN(number)) {
+        if (this.connections.length >= number) {
+            return this.connections[number];
+        } else {
+            return undefined;
+        }
+    } else {
+        return undefined;
+    }
 }
-
 
 function convertToHex(str) {
     var hex = '';
