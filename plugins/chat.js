@@ -6,7 +6,7 @@ var colors = require('colors');
 
 chat.initialized = false;
 
-chat.name = "kanato";
+chat.name = "changeme";
 chat.prefix = "<CHAT>";
 chat.numConnections = 0;
 chat.connections = [];
