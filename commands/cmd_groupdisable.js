@@ -2,9 +2,13 @@ var cmd_groupdisable = (function() {
     'use strict';
 
     var cmd_groupdisable = {
-        name: 'name',
-        description: 'Name of the group to disable',
-        args: [],
+        name: 'groupdisable',
+        description: 'Disable a script group',
+        args: [{
+            name: 'name',
+            description: "name of the group to disable",
+            optinal: false
+        }],
         init: function(mudjs, args) {
             var group = args[0];
 

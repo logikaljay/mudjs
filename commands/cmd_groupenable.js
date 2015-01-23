@@ -2,9 +2,13 @@ var cmd_groupenable = (function() {
     'use strict';
 
     var cmd_groupenable = {
-        name: 'name',
-        description: 'Name of the group to enable',
-        args: [],
+        name: 'groupenable',
+        description: 'Enables a script group',
+        args: [{
+            name: 'name',
+            description: "name of the group to enable",
+            optinal: false
+        }],
         init: function(mudjs, args) {
             var group = args[0];
 

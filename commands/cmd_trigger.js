@@ -28,7 +28,12 @@ var cmd_trigger = (function() {
                 }
                 mudjs.showme('Active triggers: ');
                 mudjs._triggers.forEach(function(trig) {
-                    mudjs.showme('"' + trig.trigger + '": ' + trig.command);
+                    if (trig.enabled) {
+                        mudjs.showme('"' + trig.trigger + '": ' + trig.command + ' ['+trig.group+']');
+                    } else {
+                        // show the trigger in red
+                        mudjs.showme('\x1B[31m' + '"' + trig.trigger + '": ' + trig.command + ' ['+trig.group+']' + '\x1B[39m');
+                    }
                 });
                 return;
             }
@@ -45,6 +50,7 @@ var cmd_trigger = (function() {
                 mudjs._triggers.push({ trigger: trigger, command: command, group: group, enabled: true });
 
                 mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
+                return;
             } else {
                 var regex = /\{(.+)\}\s*\{(.+)\}/i;
 
@@ -59,10 +65,12 @@ var cmd_trigger = (function() {
 
                     mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
                 }
-            } else {
-                mudjs.showme('Invalid trigger.')
-                mudjs.showme('Format: /trigger {My Trigger Text} {My Trigger Result} {Script group}');
+
+                return;
             }
+
+            mudjs.showme('Invalid trigger.')
+            mudjs.showme('Format: /trigger {My Trigger Text} {My Trigger Result} {Script group}');
         }
     };
 
