@@ -42,7 +42,7 @@ var cmd_trigger = (function() {
                 var command = matches[2].trim();
                 var group = matches[3].trim();
 
-                mudjs._triggers.push({ trigger: trigger, command: command, group: group });
+                mudjs._triggers.push({ trigger: trigger, command: command, group: group, enabled: true });
 
                 mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
             } else {
@@ -55,7 +55,7 @@ var cmd_trigger = (function() {
                     var trigger = matches[1].trim().replace(/\%[0-99]/gi,'(.+)');
                     var command = matches[2].trim();
 
-                    mudjs._triggers.push({ trigger: trigger, command: command, group: "" });
+                    mudjs._triggers.push({ trigger: trigger, command: command, group: "", enabled: true });
 
                     mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
                 }
