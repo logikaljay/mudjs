@@ -20,6 +20,16 @@ var cmd_groupdisable = (function() {
                     trigger.enabled = false;
                 }
             }
+
+            // iterate over all tickers
+            for (var i in mudjs._tickers) {
+                var ticker = mudjs._tickers[i];
+
+                if (ticker.group == args[0]) {
+                    ticker.enabled = false;
+                    clearInterval(ticker.ticker);
+                }
+            }
         }
     };
 

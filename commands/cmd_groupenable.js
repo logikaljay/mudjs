@@ -20,6 +20,18 @@ var cmd_groupenable = (function() {
                     trigger.enabled = true;
                 }
             }
+
+            // iterate over all tickers
+            for (var i in mudjs._tickers) {
+                var ticker = mudjs._tickers[i];
+
+                if (ticker.group == args[0]) {
+                    ticker.enabled = true;
+                    ticker.ticker = setInterval(function() {
+                        mudjs.parseInput(ticker.command)
+                    }, ticker.interval * 1000);
+                }
+            }
         }
     };
 

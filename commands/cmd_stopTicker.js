@@ -17,16 +17,24 @@ var cmd_stopTicker = (function() {
                 return;
             }
 
-            var interval = parseInt(args.shift());
-            var command = args.join(' ');
+            var i = Number(args[0]);
 
-            var ticker = setInterval(
-                function() {
-                    mudjs.sendCommand(command);
-                }, (interval * 1000)
-            );
+            if (i >= 0) {
 
-            mudjs._tickers.push(ticker);
+                var interval = parseInt(args.shift());
+                var command = args.join(' ');
+
+                var ticker = mudjs._tickers[i].ticker;
+
+                if (ticker !== undefined) {
+                    clearInterval(ticker);
+                    mudjs._tickers.splice(i, 1);
+                } else {
+                    mudjs.showme("Could not find ticker #" + i)
+                }
+            } else {
+                mudjs.showme(i + " is not a number");
+            }
         }
     };
 
