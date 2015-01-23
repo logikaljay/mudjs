@@ -19,7 +19,7 @@ var cmd_var = (function() {
             }
         ],
         init: function(mudjs, args) {
-            var vars = mudjs._variables;
+            var vars = mudjs._vars;
 
             if (args.length == 0) {
                 // list all vars

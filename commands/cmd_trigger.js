@@ -36,7 +36,7 @@ var cmd_trigger = (function() {
             if (matches && matches.length > 2) {
                 // Replace %0, %1 etc with (.+)
                 var trigger = matches[1].trim().replace(/\%[0-99]/i,'(.+)');
-
+                console.log(trigger);
                 var command = matches[2].trim();
 
                 mudjs._triggers.push({ trigger: trigger, command: command });

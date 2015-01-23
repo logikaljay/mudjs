@@ -20,9 +20,7 @@ var cmd_save = (function() {
 
             var config = {
                 triggers: mudjs._triggers,
-                aliases: mudjs._aliases,
-                tickers: mudjs._tickers,
-                variables: mudjs._variables
+                aliases: mudjs._aliases
             }
 
             fs.writeFile(file, JSON.stringify(config), function(err) {

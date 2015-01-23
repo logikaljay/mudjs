@@ -14,7 +14,7 @@ var proc_variable = (function() {
         }
         ],
         init: function(mudjs, procedure, args) {
-            var vars = mudjs._variables;
+            var vars = mudjs._vars;
 
             var key = args[0];
             if (vars[key] !== undefined) {
