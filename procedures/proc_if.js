@@ -27,13 +27,21 @@ var proc_if = (function() {
             // join the args to be a string
             var total = args.join(" ");
 
-            // get the statement
-            var statement = args.substring(0, total.indexOf('?'));
+            var matches = total.match(/(.+)\?(.+):(.+)/i);
 
-            // get the true condition
+            if (matches.length > 3) {
+                var statement = matches[1].trim();
+                var trueCondition = matches[2].trim();
+                var falseCondition = matches[3].trim();
 
+                if (eval(statement)) {
+                    return trueCondition;
+                } else {
+                    return falseCondition;
+                }
+            }
 
-            // split the string by ? then :
+            return "";
         }
     };
 
