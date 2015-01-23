@@ -6,7 +6,7 @@ var program = require('commander')
     , pkg = require('../package.json')
     , os = require('os')
     , fs = require('fs')
-    ,	mudjs = require('../')
+    , mudjs = require('../')
     ;
 
 // CLI
@@ -29,5 +29,3 @@ function abort(str) {
     console.error(str);
     process.exit(1);
 }
-
-

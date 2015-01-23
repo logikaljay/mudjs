@@ -17,7 +17,6 @@ var cmd_alias = (function() {
             }
         ],
         init: function(mudjs, args) {
-            console.log(args);
             if (args.length === 0) {
                 if (mudjs._aliases.length === 0) {
                     mudjs.showme('No active aliases');
@@ -32,13 +31,11 @@ var cmd_alias = (function() {
 
             var args = args.join(' ');
             var regex = /\{(.+)\}\s*\{(.+)\}/i;
-            console.log(args);
             var matches = args.match(regex);
 
             if (matches && matches.length >= 2) {
                 var alias = matches[1].trim();
                 var command = matches[2].trim();
-
                 mudjs._aliases[alias] = command;
 
                 mudjs.showme('Alias added. `' + alias + '` will now execute command `' + command + '`');
