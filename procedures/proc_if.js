@@ -22,8 +22,6 @@ var proc_if = (function() {
         }
         ],
         init: function(mudjs, procedure, args) {
-            var vars = mudjs._vars;
-
             // join the args to be a string
             var total = args.join(" ");
 
