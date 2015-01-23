@@ -14,6 +14,10 @@ var cmd_trigger = (function() {
                 name: 'command',
                 description: 'command that gets run when RegExp matches',
                 optional: false
+            }, {
+                name: 'Group',
+                description: 'Script group that the trigger belongs to',
+                optional: true
             }
         ],
         init: function(mudjs, args) {
@@ -29,22 +33,35 @@ var cmd_trigger = (function() {
                 return;
             }
             var args = args.join(' ');
-            var regex = /\{(.+)\}\s*\{(.+)\}/i;
 
+            var regex = /\{(.+)\}\s*\{(.+)\}\s*\{(.+)\}/i;
             var matches = args.match(regex);
-
-            if (matches && matches.length > 2) {
+            if (matches && matches.length > 3) {
                 // Replace %0, %1 etc with (.+)
                 var trigger = matches[1].trim().replace(/\%[0-99]/gi,'(.+)');
-                console.log(trigger);
                 var command = matches[2].trim();
+                var group = matches[3].trim();
 
-                mudjs._triggers.push({ trigger: trigger, command: command });
+                mudjs._triggers.push({ trigger: trigger, command: command, group: group });
 
                 mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
             } else {
+                var regex = /\{(.+)\}\s*\{(.+)\}/i;
+
+                var matches = args.match(regex);
+
+                if (matches && matches.length > 2) {
+                    // Replace %0, %1 etc with (.+)
+                    var trigger = matches[1].trim().replace(/\%[0-99]/gi,'(.+)');
+                    var command = matches[2].trim();
+
+                    mudjs._triggers.push({ trigger: trigger, command: command, group: "" });
+
+                    mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
+                }
+            } else {
                 mudjs.showme('Invalid trigger.')
-                mudjs.showme('Format: /trigger { My Trigger Text } { My Trigger Result }');
+                mudjs.showme('Format: /trigger {My Trigger Text} {My Trigger Result} {Script group}');
             }
         }
     };
