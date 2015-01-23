@@ -26,6 +26,8 @@ var cmd_load = (function() {
                 var config = JSON.parse(data);
                 mudjs._triggers = config.triggers;
                 mudjs._aliases = config.aliases;
+                mudjs._tickers = config.tickers;
+                mudjs._variables = config.variables;
             });
         }
     };
