@@ -19,12 +19,12 @@ var cmd_alias = (function() {
         init: function(mudjs, args) {
             if (args.length === 0) {
                 if (mudjs._aliases.length === 0) {
-                    console.log('No active aliases');
+                    mudjs.showme('No active aliases');
                     return;
                 }
-                console.log('Active aliases: ');
+                mudjs.showme('Active aliases: ');
                 mudjs._aliases.forEach(function(alias) {
-                    console.log('"' + alias.alias + '": ' + alias.command);
+                    mudjs.showme('"' + alias.alias + '": ' + alias.command);
                 });
                 return;
             }
@@ -39,10 +39,10 @@ var cmd_alias = (function() {
 
                 mudjs._aliases[alias] = command;
 
-                console.log('Alias added. `' + alias + '` will now execute command `' + command + '`');
+                mudjs.showme('Alias added. `' + alias + '` will now execute command `' + command + '`');
             } else {
-                console.log('Invalid alias');
-                console.log('Format: /alias { Alias } { Command to execute }');
+                mudjs.showme('Invalid alias');
+                mudjs.showme('Format: /alias { Alias } { Command to execute }');
             }
 
         }

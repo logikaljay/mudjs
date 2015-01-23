@@ -19,12 +19,12 @@ var cmd_trigger = (function() {
         init: function(mudjs, args) {
             if (args.length === 0) {
                 if (mudjs._triggers.length === 0) {
-                    console.log('No active triggers');
+                    mudjs.showme('No active triggers');
                     return;
                 }
-                console.log('Active triggers: ');
+                mudjs.showme('Active triggers: ');
                 mudjs._triggers.forEach(function(trig) {
-                    console.log('"' + trig.trigger + '": ' + trig.command);
+                    mudjs.showme('"' + trig.trigger + '": ' + trig.command);
                 });
                 return;
             }
@@ -41,10 +41,10 @@ var cmd_trigger = (function() {
 
                 mudjs._triggers.push({ trigger: trigger, command: command });
 
-                console.log('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
+                mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
             } else {
-                console.log('Invalid trigger.')
-                console.log('Format: /trigger { My Trigger Text } { My Trigger Result }');
+                mudjs.showme('Invalid trigger.')
+                mudjs.showme('Format: /trigger { My Trigger Text } { My Trigger Result }');
             }
         }
     };

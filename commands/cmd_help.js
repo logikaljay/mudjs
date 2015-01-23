@@ -18,7 +18,7 @@ var cmd_help = (function() {
             if (args.length == 0) {
                 // iterate over all commands, listing help
                 mudjs._commands._cmds.forEach(function(cmd) {
-                    console.log(util.format("/%s - %s", cmd.name, cmd.description));
+                    mudjs.showme(util.format("/%s - %s", cmd.name, cmd.description));
                 });
             } else {
                 // find specific help
@@ -28,14 +28,14 @@ var cmd_help = (function() {
                     var argsDesc = "";
                     cmd.args.forEach(function(arg) {
                         args += util.format("[%s] ", arg.name);
-                        argsDesc += util.format("\t[%s] - %s %s\n", 
-                            arg.name, 
-                            arg.description, 
+                        argsDesc += util.format("\t[%s] - %s %s\n",
+                            arg.name,
+                            arg.description,
                             arg.optional ? "(optional)" : "");
                     });
 
-                    console.log(util.format("/%s %s- %s", cmd.name, args, cmd.description));
-                    console.log(argsDesc)
+                    mudjs.showme(util.format("/%s %s- %s", cmd.name, args, cmd.description));
+                    mudjs.showme(argsDesc)
                 }
             }
         }

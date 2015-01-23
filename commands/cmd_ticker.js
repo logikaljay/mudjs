@@ -18,7 +18,7 @@ var cmd_ticker = (function() {
         ],
         init: function(mudjs, args) {
             if (args.length < 2) {
-                console.log('Usage: /ticker [x] [command]')
+                mudjs.showme('Usage: /ticker [x] [command]')
                 return;
             }
 

@@ -25,9 +25,9 @@ var cmd_save = (function() {
 
             fs.writeFile(file, JSON.stringify(config), function(err) {
                 if (err) {
-                    console.log('Could not save file: ' + err);
+                    mudjs.showme('Could not save file: ' + err);
                 } else {
-                    console.log('Saved '+ file);
+                    mudjs.showme('Saved '+ file);
                 }
 
             });

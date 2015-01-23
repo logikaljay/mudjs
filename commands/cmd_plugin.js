@@ -19,11 +19,11 @@ var cmd_plugin = (function() {
 
             fs.readdir(pluginsDir, function(err, files) {
                 if (err) {
-                    console.log('Could not read plugins directory: ' + err);
+                    mudjs.showme('Could not read plugins directory: ' + err);
                     return;
                 }
                 if (!args[0]) {
-                    console.log('Usage: /plugin [plugin name]');
+                    mudjs.showme('Usage: /plugin [plugin name]');
                     return;
                 }
 
@@ -55,18 +55,18 @@ var cmd_plugin = (function() {
                     try {
                         var plugin = require(path.join(pluginsDir, pluginName + ".js"));
                         if (!plugin.hasOwnProperty('initialized') || !plugin.load || !plugin.unload) {
-                            console.log('Could not load plugin: file does not appear to be a valid plugin');
+                            mudjs.showme('Could not load plugin: file does not appear to be a valid plugin');
                             return;
                         }
                         mudjs._plugins[pluginName] = plugin;
                         mudjs._plugins[pluginName].load(mudjs);
                     } catch (ex) {
-                        console.log("Failed to load plugin '" + pluginName + "'");
-                        console.log("Error: " + ex);
+                        mudjs.showme("Failed to load plugin '" + pluginName + "'");
+                        mudjs.showme("Error: " + ex);
                     }
 
                 } else {
-                    console.log(pluginName + ' plugin not found');
+                    mudjs.showme(pluginName + ' plugin not found');
                     return;
                 }
 

@@ -114,7 +114,7 @@ chat.load = function(mudjs) {
 }
 
 chat.unload = function() {
-    console.log("Plugin unloaded");
+    mudjs.showme("Plugin unloaded");
 }
 
 chat._connect = function(host, port) {
@@ -140,7 +140,7 @@ chat._connect = function(host, port) {
             // write the handshake to the socket
             connection.fd.write(buf, 'hex');
             connection.fd.on('error', function(err) {
-                console.log(err);
+                mudjs.showme(err);
             });
 
             // increment and add connection to the pool
@@ -217,7 +217,7 @@ chat._showChatConnections = function() {
         i++;
     });
 
-    console.log(chatConnections);
+    mudjs.showme(chatConnections);
 }
 
 chat._sendNameChange = function(str) {

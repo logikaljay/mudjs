@@ -12,7 +12,7 @@ var cmd_echo = (function() {
             }
         ],
         init: function(mudjs, args) {
-            console.log(args.join(' '));
+            mudjs.showme(args.join(' '));
         }
     };
 

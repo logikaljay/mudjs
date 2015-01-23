@@ -18,7 +18,7 @@ var cmd_session = (function() {
         ],
         init: function(mudjs, args) {
             if (args.length < 2) {
-                console.log('Usage: /session [host] [port]');
+                mudjs.showme('Usage: /session [host] [port]');
                 return;
             }
 

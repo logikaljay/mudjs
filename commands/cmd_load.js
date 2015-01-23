@@ -20,7 +20,7 @@ var cmd_load = (function() {
 
             fs.readFile(file, function(err, data) {
                 if (err) {
-                    console.log('Could not open ' + file + ': ' + err);
+                    mudjs.showme('Could not open ' + file + ': ' + err);
                     return;
                 }
                 var config = JSON.parse(data);

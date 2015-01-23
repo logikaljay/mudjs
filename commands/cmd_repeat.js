@@ -18,13 +18,13 @@ var cmd_repeat = (function() {
         ],
         init: function(mudjs, args) {
             if (!args[0] || !args[1]) {
-                console.log('Usage: /r [x] [command] ');
+                mudjs.showme('Usage: /r [x] [command] ');
                 return;
             }
             var numTimes = parseInt(args.shift());
             var command = args.join(' ');
 
-            console.log('Executing `' + command + '` ' + numTimes + ' times');
+            mudjs.showme('Executing `' + command + '` ' + numTimes + ' times');
 
             for (var i=0;i<numTimes;i++) {
                 mudjs.sendCommand(command);
