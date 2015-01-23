@@ -11,12 +11,13 @@ var cmd_groupenable = (function() {
         }],
         init: function(mudjs, args) {
             var group = args[0];
+            group = group.replace('{', '').replace('}', '');
 
             // itreate over all triggers
             for (var i in mudjs._triggers) {
                 var trigger = mudjs._triggers[i];
 
-                if (trigger.group == args[0]) {
+                if (trigger.group == group) {
                     trigger.enabled = true;
                 }
             }
@@ -25,7 +26,7 @@ var cmd_groupenable = (function() {
             for (var i in mudjs._tickers) {
                 var ticker = mudjs._tickers[i];
 
-                if (ticker.group == args[0]) {
+                if (ticker.group == group) {
                     ticker.enabled = true;
                     ticker.ticker = setInterval(function() {
                         mudjs.parseInput(ticker.command)
