@@ -282,7 +282,12 @@ chat._sendPublic = function(str) {
 }
 
 chat._sendPrivate = function(name, str) {
-    var connection = this._getConnectionByName(name);
+    var connection;
+    if (isNaN(name)) {
+        connection = this._getConnectionByName(name);
+    } else {
+        connection = this._getConnectionByNumber(Number(name) + 1);
+    }
 
     if (connection !== undefined) {
         var text = util.format(this.msg._private.send, this.name, str);
