@@ -11,13 +11,13 @@ chat.prefix = "<CHAT>";
 chat.numConnections = 0;
 chat.connections = [];
 chat.msg = {
-        _private: { 
-        send: "%s chats to you, '%s'.", 
-        show: "You chat to %s, '%s'." 
+        _private: {
+        send: "%s chats to you, '%s'.",
+        show: "You chat to %s, '%s'."
     },
-        _public: { 
-        send: "%s chats to everyone, '%s'.", 
-        show: "You chat to everyone, '%s'." 
+        _public: {
+        send: "%s chats to everyone, '%s'.",
+        show: "You chat to everyone, '%s'."
     }
 };
 
@@ -34,11 +34,12 @@ chat.cmd = {
 }
 
 chat.load = function(mudjs) {
+    this.mudjs = mudjs;
     this._show("Plugin loaded");
-    
+
     mudjs._commands.add(
-        'chatall', 
-        'Send a public chat message', 
+        'chatall',
+        'Send a public chat message',
         [{
             name: 'message',
             description: 'Message to send to all chat connections',
@@ -115,6 +116,10 @@ chat.load = function(mudjs) {
 
 chat.unload = function() {
     mudjs.showme("Plugin unloaded");
+
+    // TODO: remove all commands
+    // TODO: close all chat connections
+    // TODO: remove this from mudjs._plugins[]
 }
 
 chat._connect = function(host, port) {
@@ -136,7 +141,7 @@ chat._connect = function(host, port) {
             // to complete the handshake, send our version
             var data = convertToHex("mudjs v0.1");
             var buf = new Buffer(chat.cmd._version + data + chat.cmd._end, 'hex');
-            
+
             // write the handshake to the socket
             connection.fd.write(buf, 'hex');
             connection.fd.on('error', function(err) {
@@ -269,7 +274,7 @@ chat._sendPublic = function(str) {
         this.connections.forEach(function(connection) {
             connection.fd.write(buf, 'hex');
         });
-        
+
         this._show(show);
     } else {
         this._show('you are not connected to anyone');
@@ -278,11 +283,11 @@ chat._sendPublic = function(str) {
 
 chat._sendPrivate = function(name, str) {
     var connection = this._getConnectionByName(name);
-    
+
     if (connection !== undefined) {
         var text = util.format(this.msg._private.send, this.name, str);
         var show = util.format(this.msg._private.show, name, str);
-        
+
         var data = convertToHex(text);
         var buf = new Buffer(this.cmd._private + data + this.cmd._end, 'hex');
 
@@ -294,7 +299,7 @@ chat._sendPrivate = function(name, str) {
 }
 
 chat._show = function(str) {
-    process.stdout.write(util.format("%s %s", this.prefix, str).red + os.EOL);
+    chat.mudjs.showme(util.format("%s %s", this.prefix, str).red)
 }
 
 chat._getConnectionByName = function(name) {
@@ -326,4 +331,3 @@ function convertToHex(str) {
     }
     return hex;
 }
-
