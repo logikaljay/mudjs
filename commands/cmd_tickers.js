@@ -18,8 +18,6 @@ var cmd_tickers = (function() {
                     // show the ticker in red
                     mudjs.showme('\x1B[31m' + util.format("%s - %s [%s]", i, ticker.command, ticker.group) + '\x1B[39m');
                 }
-
-
             }
         }
     };
