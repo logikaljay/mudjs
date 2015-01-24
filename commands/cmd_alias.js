@@ -8,12 +8,12 @@ var cmd_alias = (function() {
             {
                 name: 'name',
                 description: 'The alias',
-                optional: false
+                optional: true
             },
             {
                 name: 'command',
                 description: 'The command that gets run',
-                optional: false
+                optional: true
             }
         ],
         init: function(mudjs, args) {
@@ -33,7 +33,7 @@ var cmd_alias = (function() {
             var regex = /\{(.+)\}\s*\{(.+)\}/i;
             var matches = args.match(regex);
 
-            if (matches && matches.length >= 2) {
+            if (matches && matches.length > 2) {
                 var alias = matches[1].trim();
                 var command = matches[2].trim();
                 mudjs._aliases[alias] = command;

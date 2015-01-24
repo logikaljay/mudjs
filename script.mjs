@@ -23,6 +23,6 @@
 /substitute {screams in agony.} {screams in agony. [22%-28%]} {ConditionStats}
 /substitute {winces in pain.} {winces in pain. [62%-68%]} {ConditionStats}
 
-/ticker {120} {stat} {nowhisk}
 /trigger {<(.+)\/(.+)hp (.+)\/(.+)m (.+)>} {/var currenthp %0;/var maxhp %1;/var currentmana %2;/var maxmana %3} {prompt}
-/alias {x} {/chata}
+
+/ticker {120} {stat} {nowhisk}
