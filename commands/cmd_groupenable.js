@@ -33,6 +33,15 @@ var cmd_groupenable = (function() {
                     }, ticker.interval * 1000);
                 }
             }
+
+            // itreate over all substitutes
+            for (var i in mudjs._substitutes) {
+                var sub = mudjs._substitutes[i];
+
+                if (sub.group == group) {
+                    sub.enabled = true;
+                }
+            }
         }
     };
 

@@ -31,6 +31,15 @@ var cmd_groupdisable = (function() {
                     clearInterval(ticker.ticker);
                 }
             }
+
+            // itreate over all triggers
+            for (var i in mudjs._substitutes) {
+                var sub = mudjs._substitutes[i];
+
+                if (sub.group == group) {
+                    sub.enabled = false;
+                }
+            }
         }
     };
 
