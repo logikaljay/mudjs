@@ -2,3 +2,4 @@
 node_modules
 plguins/*
 bin/*.json
+mudjs_history
