@@ -25,6 +25,30 @@ if (program.host || program.args[0]) {
     mudjs.start();
 }
 
+if (mudjs) {
+    // import the history
+    fs.exists('./mudjs_history', function(exists) {
+        if (exists) {
+            fs.readFile('./mudjs_history', function(err, data) {
+                if (data.length > 0) {
+                    var lines = data.toString().trim().split('\n');
+                    mudjs.rl.history = lines;
+                }
+            });
+        }
+    });
+}
+
+process.on('exit', function(code) {
+    // only perform synchronous operations here
+    var data = "";
+    mudjs.rl.history.map(function(item) {
+        data = data + item + "\n";
+    });
+
+    fs.writeFileSync('./mudjs_history', data);
+});
+
 function abort(str) {
     console.error(str);
     process.exit(1);
