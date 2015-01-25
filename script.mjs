@@ -24,5 +24,5 @@
 /substitute {winces in pain.} {winces in pain. [62%-68%]} {ConditionStats}
 
 /trigger {<(.+)\/(.+)hp (.+)\/(.+)m (.+)>} {/var currenthp %0;/var maxhp %1;/var currentmana %2;/var maxmana %3} {prompt}
-
+/alias {x} {/echo %- %var(currenthp) !!}
 /ticker {120} {stat} {nowhisk}
