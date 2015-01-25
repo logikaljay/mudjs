@@ -12,14 +12,21 @@ chat.numConnections = 0;
 chat.connections = [];
 chat.msg = {
     _private: {
-        send: "%s chats to you, '%s'.",
-        show: "You chat to %s, '%s'."
+        send: "\x1B[1m\x1B[31m%s chats to you, '%s'.\x1B[39m\x1B[22m",
+        show: "\x1B[1m\x1B[31mYou chat to %s, '%s'.\x1B[39m\x1B[22m"
     },
     _public: {
-        send: "%s chats to everyone, '%s'.",
-        show: "You chat to everyone, '%s'."
+        send: "\x1B[1m\x1B[31m%s chats to everyone, '%s'.\x1B[39m\x1B[22m",
+        show: "\x1B[1m\x1B[31mYou chat to everyone, '%s'.\x1B[39m\x1B[22m"
     }
 };
+
+chat.emote = {
+    _public: {
+        send: "\x1B[1m\x1B[31m%s %s\x1B[39m\x1B[22m",
+        show: "\x1B[1m\x1B[31mYou emote to everybody: %s\x1B[39m\x1B[22m"
+    }
+}
 
 chat.cmd = {
     _namechange: "01",
@@ -47,6 +54,18 @@ chat.load = function(mudjs) {
         }],
         function(mudjs, args) {
             chat._sendPublic(args.join(" "));
+        });
+
+    mudjs._commands.add(
+        'emoteall',
+        'Send a public emote',
+        [{
+            name: 'message',
+            description: 'Message to emote to all chat connections',
+            optional: false
+        }],
+        function(mudjs, args) {
+            chat._sendEmote(args.join(" "));
         });
 
     mudjs._commands.add(
@@ -300,6 +319,24 @@ chat._sendPrivate = function(name, str) {
         this._show(show);
     } else {
         this._show(util.format('you are not connected to %s.', name));
+    }
+}
+
+chat._sendEmote = function(str) {
+    if (this.connections.length > 0) {
+        var text = util.format(this.emote._public.send, this.name, str);
+        var show = util.format(this.emote._public.show, str);
+        var data = convertToHex(text);
+        var buf = new Buffer(this.cmd._public + data + this.cmd._end, 'hex');
+
+        // send str to all connections
+        this.connections.forEach(function(connection) {
+            connection.fd.write(buf, 'hex');
+        });
+
+        this._show(show);
+    } else {
+        this._show('you are not connected to anyone');
     }
 }
 

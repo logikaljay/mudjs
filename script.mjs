@@ -24,6 +24,6 @@
 /substitute {winces in pain.} {winces in pain. [62%-68%]} {ConditionStats}
 
 /trigger {<(.+)\/(.+)hp (.+)\/(.+)m (.+)>} {/var currenthp %0;/var maxhp %1;/var currentmana %2;/var maxmana %3} {prompt}
-/alias {x} {/echo %- %var(currenthp) !!}
+/alias {x} {/emotea %color(bold)%color(white)%- %color(red)[%color(green)%var(currenthp)%color(red)/%color(blue)%var(currentmana)%color(red)]}
 /alias {ex} {/loop {1} {%0} {/echo exa %loop.corpse}} {misc}
 /ticker {120} {stat} {nowhisk}
