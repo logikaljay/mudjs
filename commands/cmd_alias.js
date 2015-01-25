@@ -30,7 +30,7 @@ var cmd_alias = (function() {
             }
 
             var args = args.join(' ');
-            var regex = /\{(.+)\}\s*\{(.+)\}/i;
+            var regex = /\{(\w+)\}\s*\{(.*)\}/i;
             var matches = args.match(regex);
 
             if (matches && matches.length > 2) {

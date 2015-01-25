@@ -25,4 +25,5 @@
 
 /trigger {<(.+)\/(.+)hp (.+)\/(.+)m (.+)>} {/var currenthp %0;/var maxhp %1;/var currentmana %2;/var maxmana %3} {prompt}
 /alias {x} {/echo %- %var(currenthp) !!}
+/alias {ex} {/loop {1} {%0} {/echo exa %loop.corpse}}
 /ticker {120} {stat} {nowhisk}

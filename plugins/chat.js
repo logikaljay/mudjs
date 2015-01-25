@@ -11,11 +11,11 @@ chat.prefix = "<CHAT>";
 chat.numConnections = 0;
 chat.connections = [];
 chat.msg = {
-        _private: {
+    _private: {
         send: "%s chats to you, '%s'.",
         show: "You chat to %s, '%s'."
     },
-        _public: {
+    _public: {
         send: "%s chats to everyone, '%s'.",
         show: "You chat to everyone, '%s'."
     }
@@ -303,8 +303,14 @@ chat._sendPrivate = function(name, str) {
     }
 }
 
-chat._show = function(str) {
-    chat.mudjs.showme(util.format("%s %s", this.prefix, str).red)
+chat._show = function(str, trim) {
+    if (trim) {
+        // remove the first char (command) from the output
+        str = str.substring(1, str.length - 1);
+        chat.mudjs.showme(util.format("%s %s", this.prefix, str).red);
+    } else {
+        chat.mudjs.showme(util.format("%s %s", this.prefix, str).red);
+    }
 }
 
 chat._getConnectionByName = function(name) {
