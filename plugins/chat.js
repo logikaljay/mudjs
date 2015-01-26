@@ -40,6 +40,8 @@ chat.cmd = {
     _end: "FF"
 }
 
+chat._commands = ['chatall', 'emoteall', 'chat', 'chatname', 'chatwho', 'call']
+
 chat.load = function(mudjs) {
     this.mudjs = mudjs;
     this._show("Plugin loaded");
@@ -133,12 +135,22 @@ chat.load = function(mudjs) {
         });
 }
 
-chat.unload = function() {
-    mudjs.showme("Plugin unloaded");
+chat.unload = function(mudjs) {
+    // iterate over mudjs._commands removing chat commands
+    this._commands.forEach(function(name) {
+        mudjs._commands.remove(name);
+    });
 
-    // TODO: remove all commands
-    // TODO: close all chat connections
-    // TODO: remove this from mudjs._plugins[]
+    // iterate over this.connections - closing each one
+    for (var i = 0; i < this.connections.length; i++) {
+        var connection = this.connections[i];
+        connection.fd.end();
+        this.connections.splice(i, 1);
+        i--;
+    }
+
+    // show that we have unloaded the plugin
+    this._show("Plugin unloaded");
 }
 
 chat._connect = function(host, port) {
