@@ -20,6 +20,7 @@ var proc_color = (function() {
         var styles = {
             //styles
             'bold'      : ['\x1B[1m',  '\x1B[22m'],
+            'reset'     : ['\x1B[22m', '\x1B[22m'],
             'italic'    : ['\x1B[3m',  '\x1B[23m'],
             'underline' : ['\x1B[4m',  '\x1B[24m'],
             'inverse'   : ['\x1B[7m',  '\x1B[27m'],
