@@ -43,14 +43,16 @@ var cmd_trigger = (function() {
             var matches = args.match(regex);
             if (matches && matches.length > 2) {
                 // trim {} from trigger and group
-                var trigger = mudjs.removeBlocks(matches[1]);
+                var originalTrigger = mudjs.removeBlocks(matches[1]);
                 var group = mudjs.removeBlocks(matches[2]);
 
                 // Replace %0, %1 etc with (.+)
-                trigger = trigger.replace(/\%[0-99]/gi,'(.+)');
+
+                var trigger = originalTrigger.replace(/\%[0-99]/gi,'(.+)');
 
                 // get the command
-                var command = matches[0].replace('{' + trigger + '}', '').replace('{' + group + '}', '').trim()
+                var command = matches[0].replace('{' + originalTrigger + '}', '').replace('{' + group + '}', '').trim()
+                console.log(command);
                 var innerCommand = command.match(/\{(.*)\}/i);
                 command = innerCommand[1];
 
@@ -62,6 +64,10 @@ var cmd_trigger = (function() {
 
             mudjs.showme('Invalid trigger.')
             mudjs.showme('Format: /trigger {My Trigger Text} {My Trigger Result} {Script group}');
+        },
+
+        escapeRegExp: function(str) {
+            return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         }
     };
 
