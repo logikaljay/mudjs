@@ -39,33 +39,24 @@ var cmd_trigger = (function() {
             }
             var args = args.join(' ');
 
-            var regex = /\{(.+)\}\s*\{(.+)\}\s*\{(.+)\}/i;
+            var regex = /(\{[^{}]*\}).*(\{[^{}]*\})/i;
             var matches = args.match(regex);
-            if (matches && matches.length > 3) {
+            if (matches && matches.length > 2) {
+                // trim {} from trigger and group
+                var trigger = mudjs.removeBlocks(matches[1]);
+                var group = mudjs.removeBlocks(matches[2]);
+
                 // Replace %0, %1 etc with (.+)
-                var trigger = matches[1].trim().replace(/\%[0-99]/gi,'(.+)');
-                var command = matches[2].trim();
-                var group = matches[3].trim();
+                trigger = trigger.replace(/\%[0-99]/gi,'(.+)');
+
+                // get the command
+                var command = matches[0].replace('{' + trigger + '}', '').replace('{' + group + '}', '').trim()
+                var innerCommand = command.match(/\{(.*)\}/i);
+                command = innerCommand[1];
 
                 mudjs._triggers.push({ trigger: trigger, command: command, group: group, enabled: true });
 
                 mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
-                return;
-            } else {
-                var regex = /\{(.+)\}\s*\{(.+)\}/i;
-
-                var matches = args.match(regex);
-
-                if (matches && matches.length > 2) {
-                    // Replace %0, %1 etc with (.+)
-                    var trigger = matches[1].trim().replace(/\%[0-99]/gi,'(.+)');
-                    var command = matches[2].trim();
-
-                    mudjs._triggers.push({ trigger: trigger, command: command, group: "", enabled: true });
-
-                    mudjs.showme('Trigger added. `' + command + '` will be executed when the text `' + trigger +'` appears')
-                }
-
                 return;
             }
 

@@ -23,7 +23,13 @@
 /substitute {screams in agony.} {screams in agony. [22%-28%]} {ConditionStats}
 /substitute {winces in pain.} {winces in pain. [62%-68%]} {ConditionStats}
 
-/trigger {<(.+)\/(.+)hp (.+)\/(.+)m (.+)>} {/var currenthp %0;/var maxhp %1;/var currentmana %2;/var maxmana %3} {prompt}
-/alias {x} {/emotea %color(bold)%color(white)%- %color(red)[%color(green)%var(currenthp)%color(red)/%color(blue)%var(currentmana)%color(red)]}
-/alias {ex} {/loop {1} {%0} {/echo exa %loop.corpse}} {misc}
+/trigger {\].<(.+)\/(.+)hp (.+)\/(.+)m (.+)>} {/var currenthp %0;/var maxhp %1;/var currentmana %2;/var maxmana %3} {prompt}
+/trigger {\[(.+)%](.+)>\[} {/var healTarget %1;/if {%0 < 70} {/var healMethod 1} {/var healMethod 0}} {healing}
 /ticker {120} {stat} {nowhisk}
+
+/var healTarget me
+/var healMethod 0
+
+/alias {x} {/emotea %color(bold)%color(white)%- %color(red)[%color(green)%var(currenthp)%color(red)/%color(blue)%var(currentmana)%color(red)]} {chat}
+/alias {ex} {/loop {1} {%0} {/echo exa %loop.corpse}} {misc}
+/alias {h} {/if {%exists(healTarget)} {/if {%var(healMethod) == 1} {c heal %var(healTarget)} {c c c %var(healTarget)}} {/echo %color(bold)%color(yellow)WARN: no heal target set}} {healing}

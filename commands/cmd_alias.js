@@ -30,13 +30,21 @@ var cmd_alias = (function() {
             }
 
             var args = args.join(' ');
-            var regex = /\{(\w+)\}\s*\{(.*)\}/i;
+            var regex = /(\{[^{}]*\}).*(\{[^{}]*\})/i;
             var matches = args.match(regex);
 
             if (matches && matches.length > 2) {
-                var alias = matches[1].trim();
-                var command = matches[2].trim();
-                mudjs._aliases[alias] = command;
+                // format the alias and group
+                var alias = mudjs.removeBlocks(matches[1]);
+                var group = mudjs.removeBlocks(matches[2]);
+
+                // get the command
+                var command = matches[0].replace('{' + alias + '}', '').replace('{' + group + '}', '').trim()
+                console.log(command);
+                var innerCommand = command.match(/\{(.*)\}/i);
+                command = innerCommand[1];
+
+                mudjs._aliases[alias] = { alias: alias, command: command, group: group, enabled: true };
 
                 mudjs.showme('Alias added. `' + alias + '` will now execute command `' + command + '`');
             } else {

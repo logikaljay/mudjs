@@ -24,13 +24,16 @@ var cmd_if = (function() {
 
             // join the args to be a string
             var total = args.join(" ");
+            var matches = total.match(/(\{[^{}]*\}).*(\{[^{}]*\})/i);
 
-            var matches = total.match(/{(.+)}.{(.+)}.{(.+)}/i);
+            if (matches.length > 2) {
+                var statement = mudjs.removeBlocks(matches[1]);
+                var falseCondition = mudjs.removeBlocks(matches[2]);
+                var trueCondition = matches[0].trim().replace('{' + statement + '}', '').replace('{' + falseCondition + '}');
+                trueCondition = trueCondition.replace(/\{/i, '').substring(0, trueCondition.lastIndexOf('}') - 1).trim();
 
-            if (matches.length > 3) {
-                var statement = matches[1].trim();
-                var trueCondition = matches[2].trim();
-                var falseCondition = matches[3].trim();
+                // process procedures in statement
+                statement = mudjs._procedures.process(mudjs, statement);
 
                 if (eval(statement)) {
                     mudjs.parseInput(trueCondition);
