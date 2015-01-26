@@ -40,7 +40,6 @@ var cmd_alias = (function() {
 
                 // get the command
                 var command = matches[0].replace('{' + alias + '}', '').replace('{' + group + '}', '').trim()
-                console.log(command);
                 var innerCommand = command.match(/\{(.*)\}/i);
                 command = innerCommand[1];
 
