@@ -305,12 +305,12 @@ chat._sendPrivate = function(name, str) {
     if (isNaN(name)) {
         connection = this._getConnectionByName(name);
     } else {
-        connection = this._getConnectionByNumber(Number(name) + 1);
+        connection = this._getConnectionByNumber(Number(name) - 1);
     }
 
     if (connection !== undefined) {
         var text = util.format(this.msg._private.send, this.name, str);
-        var show = util.format(this.msg._private.show, name, str);
+        var show = util.format(this.msg._private.show, connection.name, str);
 
         var data = convertToHex(text);
         var buf = new Buffer(this.cmd._private + data + this.cmd._end, 'hex');
@@ -318,7 +318,7 @@ chat._sendPrivate = function(name, str) {
         connection.fd.write(buf, 'hex');
         this._show(show);
     } else {
-        this._show(util.format('you are not connected to %s.', name));
+        this._show(util.format('You are not connected to %s.', name));
     }
 }
 
