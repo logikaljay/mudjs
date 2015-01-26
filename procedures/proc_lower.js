@@ -5,7 +5,7 @@ var proc_lower = (function() {
 
     var proc_lower = {
         name: 'lower',
-        description: 'Show a color',
+        description: 'Convert args to lowercase',
         args: [
         {
             name: 'text',
