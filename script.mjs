@@ -25,6 +25,14 @@
 
 /trigger {\].<(.+)\/(.+)hp (.+)\/(.+)m (.+)>} {/var currenthp %0;/var maxhp %1;/var currentmana %2;/var maxmana %3} {prompt}
 /trigger {\[(.+)%](.+)>\[} {/var healTarget %1;/if {%0 < 70} {/var healMethod 1} {/var healMethod 0}} {healing}
+/trigger {%0} {/if {"%textcolor(%0)" == "yellow"} {/var RoomName %0} {/var NotRoomName %0}} {GetRoomName}
+/trigger {\+\[%0\]\+} {/if {"%textcolor(%0)" == "yellow"} {/var RoomName %0} {/var NotRoomName %0}} {RoomName}
+/trigger {\-\[%0\]\-} {/if {"%textcolor(%0)" == "yellow"} {/var RoomName %0} {/var NotRoomName %0}} {RoomName}
+/trigger {\´%0\Ã} {/if {"%textcolor(%0)" == "yellow"} {/var RoomName %0} {/var NotRoomName %0}} {RoomName}
+/trigger {\+\-%0\-\+} {/groupenable GetRoomName} {RoomName}
+/trigger {Obvious exits:} {/groupdisable GetRoomName} {RoomName}
+/groupdisable GetRoomName
+
 /ticker {120} {stat} {nowhisk}
 
 /var healTarget me
