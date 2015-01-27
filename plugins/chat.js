@@ -3,6 +3,7 @@ var chat = exports = module.exports = {};
 var util = require('util');
 var net = require('net');
 var colors = require('colors');
+var Table = require('cli-table');
 
 chat.initialized = false;
 
@@ -253,19 +254,19 @@ chat._recvCommand = function(conn, cmd, str) {
 
 chat._showChatConnections = function() {
     var chatConnections = [];
-    var i = 1;
-    chat.connections.forEach(function(connection) {
-        chatConnections.push({
-            id: i,
-            name: connection.name,
-            ip: connection.fd.remoteAddress,
-            port: connection.fd.remotePort
-        });
-
-        i++;
+    var table = new Table({
+        chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
+        style : {compact : true, 'padding-left' : 1},
+        head: ['#', 'Name', 'IP', 'Port'],
+        colWidths: [5, 25, 25, 10]
     });
 
-    mudjs.showme(chatConnections);
+    for (var i = 0; i < chat.connections.length; i++) {
+        var connection = chat.connections[i];
+        table.push([i, connection.name, connection.fd.remoteAddress, connection.fd.remotePort]);
+    }
+
+    this.mudjs.showme(table.toString());
 }
 
 chat._sendNameChange = function(str) {
