@@ -38,22 +38,23 @@ var cmd_load = (function() {
                     }
                 });
                 if (foundPlugin) {
-                    if (!mudjs._plugins[pluginName]) {
-                        // attempt to load the plugin - don't crash if the user has a error
-                        try {
-                            var plugin = require(path.join(pluginsDir, pluginName + ".js"));
-                            if (!plugin.hasOwnProperty('initialized') || !plugin.load || !plugin.unload) {
-                                mudjs.showme('Could not load plugin: file does not appear to be a valid plugin');
-                                return;
-                            }
-                            mudjs._plugins[pluginName] = plugin;
-                            mudjs._plugins[pluginName].load(mudjs);
-                        } catch (ex) {
-                            mudjs.showme("Failed to load plugin '" + pluginName + "'");
-                            mudjs.showme("Error: " + ex);
+                    if (mudjs._plugins[pluginName]) {
+                        mudjs.showme(pluginName + " already loaded, reloading..");
+                        mudjs._commands._lookup['unload'].init(mudjs, [pluginName]);
+                    }
+
+                    // attempt to load the plugin - don't crash if the user has a error
+                    try {
+                        var plugin = require(path.join(pluginsDir, pluginName + ".js"));
+                        if (!plugin.hasOwnProperty('initialized') || !plugin.load || !plugin.unload) {
+                            mudjs.showme('Could not load plugin: file does not appear to be a valid plugin');
+                            return;
                         }
-                    } else {
-                        mudjs.showme(pluginName + ' already loaded. /unload ' + pluginName);
+                        mudjs._plugins[pluginName] = plugin;
+                        mudjs._plugins[pluginName].load(mudjs);
+                    } catch (ex) {
+                        mudjs.showme("Failed to load plugin '" + pluginName + "'");
+                        mudjs.showme("Error: " + ex);
                     }
 
                 } else {
