@@ -1,3 +1,5 @@
+var Table = require('cli-table');
+
 var cmd_triggers = (function() {
     'use strict';
 
@@ -11,15 +13,34 @@ var cmd_triggers = (function() {
                     mudjs.showme('No active triggers');
                     return;
                 }
+
                 mudjs.showme('Active triggers: ');
                 mudjs._triggers.forEach(function(trig) {
                     if (trig.enabled) {
-                        mudjs.showme('"' + trig.trigger + '": ' + trig.command + ' ['+trig.group+']');
+                        var table = new Table({
+                            chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
+                            style : {compact : true, 'padding-left' : 1},
+                        });
+
+                        table.push({ 'Trigger': [trig.trigger]});
+                        table.push({ 'Command': [trig.command]});
+                        table.push({ 'Group': [trig.group]});
+                        mudjs.showme(table.toString());
                     } else {
                         // show the trigger in red
-                        mudjs.showme('\x1B[31m' + '"' + trig.trigger + '": ' + trig.command + ' ['+trig.group+']' + '\x1B[39m');
+                        var table = new Table({
+                            chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
+                            style : {compact : true, 'padding-left' : 1},
+                        });
+
+                        table.push({ 'Trigger': [trig.trigger]});
+                        table.push({ 'Command': [trig.command]});
+                        table.push({ 'Group': [trig.group]});
+                        table.push({ 'Disabled': [true]});
+                        mudjs.showme(table.toString());
                     }
                 });
+
                 return;
             }
         }
