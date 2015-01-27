@@ -3,10 +3,12 @@ var list = exports = module.exports = {
     lists: [],
     mudjs: null,
     datafile: __dirname + '/../list.json',
+
 };
 
 var util = require('util');
 var fs = require('fs');
+var Table = require('cli-table');
 
 list.load = function(mudjs) {
     list.mudjs = mudjs;
@@ -121,13 +123,49 @@ list.loadCommands = function(fn) {
 
 list.list_show = function() {
     // iterate over lists, showing each internal list
-    this.mudjs.showme("Lists:")
-    this.mudjs.showme("--------------------");
-    this.mudjs.showme(util.inspect(list.lists));
+    var table = new Table({
+        chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
+        style : {compact : true, 'padding-left' : 1},
+        head: ['#', 'List name', 'Count'],
+        colWidths: [5, 25, 25]
+    });
+
+    list.lists.forEach(function(l) {
+        table.push(
+            [ l.index, l.name, l.items.length ]
+        );
+    });
+
+    this.mudjs.showme(table.toString());
 }
 
 list.list_show_items = function(id) {
     // iterate over listItems in list.lists, showing each item
+    var table = new Table({
+        chars: {'mid': '', 'left-mid': '', 'mid-mid': '', 'right-mid': ''},
+        style : {compact : true, 'padding-left' : 1},
+        head: ['#', 'List name', 'Item value'],
+        colWidths: [5, 15, 35]
+    });
+
+    // get the list
+    var tmp;
+
+    if (isNaN(id)) {
+        tmp = list.lists.filter(function(l) {
+            return l.name == id;
+        })[0];
+    } else {
+        tmp = list.lists[id];
+    }
+
+    for (var i = 0; i < tmp.items.length; i++) {
+        table.push(
+            [ i, tmp.name, tmp.items[i] ]
+        );
+    }
+
+    this.mudjs.showme(table.toString());
 }
 
 list.list_add = function(id) {
