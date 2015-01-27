@@ -22,9 +22,13 @@ var cmd_session = (function() {
                 return;
             }
 
-            var host = args.shift();
-            var port = parseInt(args.shift());
-            mudjs.connect(host, port);
+            if (mudjs.connection === undefined) {
+                var host = args.shift();
+                var port = parseInt(args.shift());
+                mudjs.connect(host, port);
+            } else {
+                mudjs.showme("A session is already active");
+            }
         }
     };
 
