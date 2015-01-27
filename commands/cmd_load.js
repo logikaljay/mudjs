@@ -38,31 +38,22 @@ var cmd_load = (function() {
                     }
                 });
                 if (foundPlugin) {
-                    if (mudjs._plugins.hasOwnProperty(pluginName)) {
-                        mudjs._plugins[pluginName].unload();
-                        mudjs._plugins[pluginName] = null;
-                        for (var i=0;i<require.cache.length;i++) {
-
-                        }
-                        for (var key in require.cache) {
-                            if (key.indexOf(pluginName + '.js') > -1) {
-                                delete require.cache[key];
+                    if (!mudjs._plugins[pluginName]) {
+                        // attempt to load the plugin - don't crash if the user has a error
+                        try {
+                            var plugin = require(path.join(pluginsDir, pluginName + ".js"));
+                            if (!plugin.hasOwnProperty('initialized') || !plugin.load || !plugin.unload) {
+                                mudjs.showme('Could not load plugin: file does not appear to be a valid plugin');
+                                return;
                             }
+                            mudjs._plugins[pluginName] = plugin;
+                            mudjs._plugins[pluginName].load(mudjs);
+                        } catch (ex) {
+                            mudjs.showme("Failed to load plugin '" + pluginName + "'");
+                            mudjs.showme("Error: " + ex);
                         }
-                    }
-
-                    // attempt to load the plugin - don't crash if the user has a error
-                    try {
-                        var plugin = require(path.join(pluginsDir, pluginName + ".js"));
-                        if (!plugin.hasOwnProperty('initialized') || !plugin.load || !plugin.unload) {
-                            mudjs.showme('Could not load plugin: file does not appear to be a valid plugin');
-                            return;
-                        }
-                        mudjs._plugins[pluginName] = plugin;
-                        mudjs._plugins[pluginName].load(mudjs);
-                    } catch (ex) {
-                        mudjs.showme("Failed to load plugin '" + pluginName + "'");
-                        mudjs.showme("Error: " + ex);
+                    } else {
+                        mudjs.showme(pluginName + ' already loaded. /unload ' + pluginName);
                     }
 
                 } else {

@@ -12,11 +12,22 @@ var cmd_unload = (function() {
         }
         ],
         init: function(mudjs, args) {
-            var plugin = args[0];
+            var pluginName = args[0];
 
-            if (mudjs._plugins && mudjs._plugins[plugin]) {
-                mudjs._plugins[plugin].unload(mudjs);
-                delete mudjs._plugins[plugin];
+            if (mudjs._plugins[pluginName]) {
+                mudjs._plugins[pluginName].unload(mudjs);
+                mudjs._plugins[pluginName] = null;
+                for (var i=0;i<require.cache.length;i++) {
+
+                }
+                for (var key in require.cache) {
+                    if (key.indexOf(pluginName + '.js') > -1) {
+                        delete require.cache[key];
+                    }
+                }
+
+            } else {
+                mudjs.showme("Plugin " + pluginName + " not loaded. /load " + pluginName)
             }
         }
     };
