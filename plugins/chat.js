@@ -365,7 +365,7 @@ chat._sendEmote = function(str) {
 }
 
 chat._showHelp = function(func) {
-    chat.mudjs._commands._lookup['help'].init(mudjs, [func]);
+    chat.mudjs._commands._lookup['help'].init(chat.mudjs, [func]);
 }
 
 chat._show = function(str, trim) {

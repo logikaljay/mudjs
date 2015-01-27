@@ -21,15 +21,22 @@ var cmd_read = (function() {
                 file = file + '.mjs';
             }
 
-            // read the file
-            fs.readFile(file, function(err, data) {
-                var cmds = data.toString().split('\n');
-                cmds.forEach(function(cmd) {
-                    // process the input
-                    mudjs.parseInput(cmd);
+            // check if the file exists
+            fs.exists(file, function(exists) {
+                if (!exists) {
+                    mudjs.showme('Cannot read ' + file + ": file does not exist");
+                    return;
+                }
+
+                // read the file
+                fs.readFile(file, function(err, data) {
+                    var cmds = data.toString().split('\n');
+                    cmds.forEach(function(cmd) {
+                        // process the input
+                        mudjs.parseInput(cmd);
+                    });
                 });
             });
-
         }
     };
 
