@@ -95,7 +95,11 @@ chat.load = function(mudjs) {
             optional: false
         }],
         function(mudjs, args) {
-            chat._sendNameChange(args[0]);
+            if (args[0]) {
+                chat._sendNameChange(args[0]);
+            } else {
+                chat._showHelp('chatname');
+            }
         });
 
     mudjs._commands.add(
@@ -115,7 +119,11 @@ chat.load = function(mudjs) {
             optional: false
         }],
         function(mudjs, args) {
-            chat._disconnect(args[0]);
+            if (args[0]) {
+                chat._disconnect(args[0]);
+            } else {
+                chat._showHelp('unchat');
+            }
         });
 
     mudjs._commands.add(
@@ -131,7 +139,11 @@ chat.load = function(mudjs) {
             optional: false
         }],
         function(mudjs, args) {
-            chat._connect(args[0], args[1]);
+            if (!isNaN(args[1])) {
+                chat._connect(args[0], args[1]);
+            } else {
+                chat._showHelp(mudjs);
+            }
         });
 }
 
@@ -350,6 +362,10 @@ chat._sendEmote = function(str) {
     } else {
         this._show('you are not connected to anyone');
     }
+}
+
+chat._showHelp = function(func) {
+    chat.mudjs._commands._lookup['help'].init(mudjs, [func]);
 }
 
 chat._show = function(str, trim) {
