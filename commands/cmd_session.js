@@ -22,7 +22,7 @@ var cmd_session = (function() {
                 return;
             }
 
-            if (mudjs.connection === undefined) {
+            if (mudjs.connection === undefined || mudjs.conenction == null) {
                 var host = args.shift();
                 var port = parseInt(args.shift());
                 mudjs.connect(host, port);
