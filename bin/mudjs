@@ -15,14 +15,19 @@ program.version(pkg.version)
     .usage('[host] [port]')
     .option('-h, --host', 'Telnet server hostname')
     .option('-p, --port', 'Port of telnet server')
+	.option('-d, --debug', 'Debugging mode')
     .parse(process.argv)
 
-if (program.host || program.args[0]) {
-    var host = program.args[0] ? program.args[0] : program.host;
-    var port = program.args[1] ? program.args[1] : program.port ? program.port : 23;
+if (program.host) {
+    var host = program.host;
+    var port = program.port ? program.port : 23;
     mudjs.startAndConnect(host, port)
 } else {
     mudjs.start();
+	
+	if (program.debug) {
+		mudjs.debug.init(mudjs);
+	}
 }
 
 if (mudjs) {

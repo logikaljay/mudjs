@@ -27,7 +27,7 @@ var proc_if = (function() {
 
             var matches = total.match(/(.+)\?(.+):(.+)/i);
 
-            if (matches.length > 3) {
+            if (matches && matches.length > 3) {
                 var statement = matches[1].trim();
                 var trueCondition = matches[2].trim();
                 var falseCondition = matches[3].trim();

@@ -26,12 +26,16 @@ var cmd_if = (function() {
             var total = args.join(" ");
             var matches = total.match(/(\{[^{}]*\}).*(\{[^{}]*\})/i);
 
-            if (matches.length > 2) {
+            if (matches && matches.length > 2) {
                 var statement = mudjs.removeBlocks(matches[1]);
                 var falseCondition = mudjs.removeBlocks(matches[2]);
                 var trueCondition = matches[0].trim().replace('{' + statement + '}', '').replace('{' + falseCondition + '}');
                 trueCondition = trueCondition.replace(/\{/i, '').substring(0, trueCondition.lastIndexOf('}') - 1).trim();
 
+				console.log("statement: " + statement);
+				console.log("on true: " + trueCondition);
+				co
+				
                 // process procedures in statement
                 statement = mudjs._procedures.process(mudjs, statement);
 
